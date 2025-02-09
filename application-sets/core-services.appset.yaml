@@ -26,7 +26,7 @@ spec:
       source:
         repoURL: https://github.com/project-id8/deployments.git
         targetRevision: HEAD
-        path: '{{.path}}'
+        path: '{{.path.path}}'
       destination:
         server: '{{.server}}'
         namespace: '{{.path.basename}}'
