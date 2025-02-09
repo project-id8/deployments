@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: it-tools-deployment
+  namespace: it-tools
+  labels:
+    app: it-tools
+  annotations:
+    argocd.argoproj.io/sync-wave: "101"
+spec:
+  replicas: 1 # Number of desired replicas
+  selector:
+    matchLabels:
+      app: it-tools
+  template:
+    metadata:
+      labels:
+        app: it-tools
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: it-tools-container
+          image: corentinth/it-tools:latest
+          imagePullPolicy: "Always"
+          ports:
+            - containerPort: 80 # The port your application is listening on
+          resources:
+            requests:
+              memory: "64Mi" # Minimum memory request
+              cpu: "50m" # Minimum CPU request
+            limits:
+              memory: "256Mi" # Maximum memory limit
+              cpu: "200m" # Maximum CPU limit
