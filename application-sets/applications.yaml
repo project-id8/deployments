@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: applications-appset
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+      # matrix 'parent' generator
+    - matrix:
+        generators:
+          # Git generator, 'child' #1
+          - git:
+              repoURL: https://github.com/project-id8/deployments.git
+              revision: HEAD
+              directories:
+                - path: applications/*
+          # cluster generator, 'child' #2
+          - clusters: {}  
+  template:
+    metadata:
+      name: '{{.path.basename}}-{{.name}}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/project-id8/deployments.git
+        targetRevision: HEAD
+        path: '{{.path.path}}'
+      destination:
+        server: '{{.server}}'
+        namespace: '{{.path.basename}}'
+      syncPolicy:
+        # Best practices for syncPolicy:
+        # 1. Use automated sync with prune=true and selfHeal=true for most applications.
+        # 2. For applications that require manual approval, remove the automated sync policy.
+        # 3. Use retry to handle transient errors.
+        automated: # automated sync by default retries failed attempts 5 times with following delays between attempts ( 5s, 10s, 20s, 40s, 80s ); retry controlled using `retry` field.
+          prune: true # Specifies if resources should be pruned during auto-syncing ( false by default ).
+          selfHeal: true # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
