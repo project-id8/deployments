@@ -22,6 +22,15 @@ Argo CD uses sync waves to manage the order of resource deployment, ensuring int
 
 Argo CD organizes resources by phase (pre-sync, sync, post-sync) and wave. Resources in each phase are ordered by wave value, Kubernetes kind, and name. Argo CD applies resources in the lowest wave that has out-of-sync or unhealthy resources.
 
+Example annotations:
+
+```yaml
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+    argocd.argoproj.io/sync-phase: pre-sync
+```
+
 #### Sync Wave Phases
 
 *   PreSync: Executes before the main sync operation (e.g., database migrations).
