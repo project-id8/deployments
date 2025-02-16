@@ -17,6 +17,10 @@ spec:
             apiTokenSecretRef:
               name: cloudflare-api-token
               key: CLOUDFLARE_API_TOKEN
+          cnameStrategy: Follow
+          recursiveNameservers:
+            - "1.1.1.1:53"
+            - "8.8.8.8:53"
 ---
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
@@ -36,4 +40,8 @@ spec:
           cloudflare:
             apiTokenSecretRef:
               name: cloudflare-api-token
-              key: CLOUDFLARE_API_TOKEN 
+              key: CLOUDFLARE_API_TOKEN
+          cnameStrategy: Follow
+          recursiveNameservers:
+            - "1.1.1.1:53"
+            - "8.8.8.8:53" 
