@@ -11,12 +11,12 @@ resources:
 
 patches:
   - patch: |-
-      - op: test
-        path: /spec/template/spec/containers/0/args/2
-        value: --leader-election-namespace=kube-system
-      - op: replace
-        path: /spec/template/spec/containers/0/args/2
-        value: --leader-election-namespace=cert-manager
+      # - op: test
+      #   path: /spec/template/spec/containers/0/args/2
+      #   value: --leader-election-namespace=kube-system
+      # - op: replace
+      #   path: /spec/template/spec/containers/0/args/2
+      #   value: --leader-election-namespace=cert-manager
       - op: add
         path: /spec/template/spec/containers/0/args/-
         value: --dns01-recursive-nameservers=8.8.8.8:53,1.1.1.1:53
