@@ -12,5 +12,5 @@ spec:
     - "*.project-id8.org"
     - "project-id8.org"  # Also include apex domain
   issuerRef:
-    name: letsencrypt-staging
+    name: letsencrypt-prod
     kind: ClusterIssuer 
