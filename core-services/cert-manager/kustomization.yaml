@@ -9,15 +9,22 @@ resources:
   - cluster-issuers.yaml
   - wildcard-certificate.yaml
 
-# Configure the DNS settings via patches
 patches:
   - patch: |-
-      - op: add
-        path: /spec/template/spec/containers/0/args/-
-        value: --dns01-recursive-nameservers=8.8.8.8:53,1.1.1.1:53
-      - op: add
-        path: /spec/template/spec/containers/0/args/-
-        value: --dns01-recursive-nameservers-only
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: cert-manager
+        namespace: cert-manager
+      spec:
+        template:
+          spec:
+            containers:
+            - name: cert-manager
+              args:
+              - --dns01-recursive-nameservers=8.8.8.8:53,1.1.1.1:53
+              - --dns01-recursive-nameservers-only
+              - --leader-election-namespace=cert-manager
     target:
       kind: Deployment
       name: cert-manager
