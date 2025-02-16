@@ -11,23 +11,18 @@ resources:
 
 patches:
   - patch: |-
-      apiVersion: apps/v1
-      kind: Deployment
-      metadata:
-        name: cert-manager
-        namespace: cert-manager
-      spec:
-        template:
-          spec:
-            $patch: merge
-            containers:
-            - name: cert-manager
-              $patch: merge
-              image: quay.io/jetstack/cert-manager-controller:v1.17.0
-              args:
-              - --leader-election-namespace=cert-manager
-              - --dns01-recursive-nameservers=8.8.8.8:53,1.1.1.1:53
-              - --dns01-recursive-nameservers-only
+      - op: test
+        path: /spec/template/spec/containers/0/args/2
+        value: --leader-election-namespace=kube-system
+      - op: replace
+        path: /spec/template/spec/containers/0/args/2
+        value: --leader-election-namespace=cert-manager
+      - op: add
+        path: /spec/template/spec/containers/0/args/-
+        value: --dns01-recursive-nameservers=8.8.8.8:53,1.1.1.1:53
+      - op: add
+        path: /spec/template/spec/containers/0/args/-
+        value: --dns01-recursive-nameservers-only
     target:
       kind: Deployment
       name: cert-manager
