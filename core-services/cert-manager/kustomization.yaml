@@ -3,4 +3,5 @@ kind: Kustomization
 resources:
   - argocd-app.yaml
   - cloudflare-token.external-secret.yaml
-  - cluster-issuers.yaml 
+  - cluster-issuers.yaml
+  - wildcard-certificate.yaml 

@@ -1,0 +1,16 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard-project-id8-org-tls
+  namespace: cert-manager
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  secretName: wildcard-project-id8-org-tls
+  dnsNames:
+    - "*.project-id8.org"
+    - "project-id8.org"  # Also include apex domain
+  issuerRef:
+    name: letsencrypt-staging
+    kind: ClusterIssuer 
