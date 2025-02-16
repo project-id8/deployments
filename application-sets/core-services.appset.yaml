@@ -22,7 +22,7 @@ spec:
     metadata:
       name: '{{.path.basename}}-{{.name}}'
     spec:
-      project: '{{.name}}-core-services'
+      project: default
       source:
         repoURL: https://github.com/project-id8/deployments.git
         targetRevision: HEAD
