@@ -14,7 +14,8 @@ helm template \
   --namespace cert-manager \
   --create-namespace \
   --version v1.17.0 \
-  --set crds.enabled=true > cert-manager.1.17.0.yaml
+  --set crds.enabled=true \
+  --set global.leaderElection.namespace=cert-manager > cert-manager.1.17.0.yaml
 
 # 4. Update the kustomization.yaml file with the new cert-manager.1.17.0.yaml file
 
