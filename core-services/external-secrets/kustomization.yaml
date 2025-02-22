@@ -8,6 +8,6 @@ resources:
   - external-secrets.0.14.2.yaml
   - infisical.secret-store.yaml
   # External Secrets Operator resources...
-  - ../cloudflare-tunnel/namespace.yaml
+  - cloudflare-tunnel.namespace.yaml
   - cloudflare-tunnel-token.external-secret.yaml
   - cloudflare-tunnel-id.external-secret.yaml
