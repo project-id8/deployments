@@ -11,9 +11,6 @@ kind: Kustomization
 namespace: cloudflare-tunnel
 
 resources:
-  - namespace.yaml
-  - cloudflare-tunnel-token.external-secret.yaml
-  - tunnel-id.external-secret.yaml
   - tunnel-config.yaml
   - deployment.yaml
   - network-policy.yaml
