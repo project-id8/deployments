@@ -24,6 +24,7 @@ replacements:
   - source:
       kind: ConfigMap
       name: cloudflare-tunnel-config
+      namespace: cloudflare-tunnel
       fieldPath: data.tunnel-url
     targets:
       - select:
@@ -35,10 +36,12 @@ replacements:
   - source:
       kind: Secret
       name: cloudflare-tunnel-id
+      namespace: cloudflare-tunnel
       fieldPath: data.CLOUDFLARE_TUNNEL_ID
     targets:
       - select:
           kind: ConfigMap
           name: cloudflare-tunnel-config
+          namespace: cloudflare-tunnel
         fieldPaths:
           - data.tunnel-url 
