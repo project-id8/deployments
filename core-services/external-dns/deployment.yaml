@@ -22,6 +22,7 @@ spec:
           args:
             - --source=service
             - --source=ingress
+            - --source=gateway-httproute
             - --provider=cloudflare
             - --cloudflare-proxied
             - --cloudflare-dns-records-per-page=5000

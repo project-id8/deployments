@@ -1,0 +1,40 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Cloudflare Tunnel Configuration
+# This sets up a Cloudflare tunnel for secure ingress
+# Dependencies:
+# - External Secrets Operator
+# - Gateway API
+# - Cloudflare account with tunnel configured
+
+namespace: cloudflare-tunnel
+
+resources:
+  - namespace.yaml
+  - cloudflare-tunnel-token.external-secret.yaml
+  - tunnel-id.external-secret.yaml
+  - tunnel-config.yaml
+  - deployment.yaml
+  - network-policy.yaml
+  - pdb.yaml
+
+vars:
+  # Get the tunnel URL from the ConfigMap
+  - name: TUNNEL_URL
+    objref:
+      kind: ConfigMap
+      name: cloudflare-tunnel-config
+      namespace: cloudflare-tunnel
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.tunnel-url
+
+  # Get the tunnel ID from the Secret
+  - name: CLOUDFLARE_TUNNEL_ID
+    objref:
+      kind: Secret
+      name: cloudflare-tunnel-id
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.CLOUDFLARE_TUNNEL_ID 

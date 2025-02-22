@@ -1,0 +1,13 @@
+# This PodDisruptionBudget ensures that at least 2 pods are running
+# This is important for the Cloudflare Tunnel to ensure that there are always
+# multiple replicas running to avoid downtime
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: cloudflared-pdb
+  namespace: cloudflare-tunnel
+spec:
+  minAvailable: 2  # At least 2 pods must be running
+  selector:
+    matchLabels:
+      app: cloudflared 

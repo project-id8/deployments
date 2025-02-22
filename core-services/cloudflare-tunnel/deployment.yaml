@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudflared
+  namespace: cloudflare-tunnel
+spec:
+  selector:
+    matchLabels:
+      app: cloudflared
+  replicas: 3  # Run multiple replicas for high availability
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1  # Keep at least 2 pods running during updates
+      maxSurge: 1       # Don't create more than 1 extra pod during updates
+  template:
+    metadata:
+      labels:
+        app: cloudflared
+    spec:
+      # Security context for the pod
+      securityContext:
+        runAsNonRoot: true  # Don't run as root
+        runAsUser: 65534    # Use nobody user
+      containers:
+        - name: cloudflared
+          image: cloudflare/cloudflared:2025.2.0
+          # Arguments to start the tunnel
+          args:
+            - tunnel           # Run in tunnel mode
+            - --no-autoupdate  # Disable auto updates
+            - --metrics        # Enable metrics endpoint
+            - 0.0.0.0:2000    # Listen on all interfaces
+            - run             # Run the tunnel
+            - --token         # Use token authentication
+          # Get the tunnel token from the secret
+          env:
+            - name: TUNNEL_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: cloudflare-tunnel-token
+                  key: CLOUDFLARE_TUNNEL_TOKEN
+          ports:
+            - containerPort: 2000
+              name: metrics   # Port for prometheus metrics
+          # Health checking
+          livenessProbe:
+            httpGet:
+              path: /ready
+              port: 2000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 2000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          # Resource limits and requests
+          resources:
+            requests:
+              cpu: "100m"     # Request 0.1 CPU cores
+              memory: "128Mi"  # Request 128MB memory
+            limits:
+              cpu: "200m"     # Limit to 0.2 CPU cores
+              memory: "256Mi" # Limit to 256MB memory
+          # Container security context
+          securityContext:
+            allowPrivilegeEscalation: false  # Prevent privilege escalation
+            capabilities:
+              drop:
+                - ALL  # Drop all capabilities
+      # Ensure pods are spread across nodes
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfied: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app: cloudflared 

@@ -1,0 +1,12 @@
+# This ConfigMap is used to store the tunnel URL
+# It is used by the Gateway API to update the DNS record
+# It is also used by the Cloudflare Tunnel to update the tunnel URL
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cloudflare-tunnel-config
+  namespace: cloudflare-tunnel
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"  # After the secret is created
+data:
+  tunnel-url: "$(CLOUDFLARE_TUNNEL_ID).cfargotunnel.com" 

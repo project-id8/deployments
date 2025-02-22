@@ -1,0 +1,28 @@
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  name: it-tools-route
+  namespace: it-tools
+  annotations:
+    # This is the URL of the Cloudflare tunnel
+    # external-dns will use this to update the DNS record
+    external-dns.alpha.kubernetes.io/target: $(TUNNEL_URL)
+    # This is the ArgoCD sync wave, it should be after the service and deployment
+    argocd.argoproj.io/sync-wave: "102"
+    argocd.argoproj.io/sync-phase: sync
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  parentRefs:
+    - name: gateway
+      namespace: gateway-system
+  hostnames:
+    # The hostname of the service (external-dns will use this for the DNS record)
+    - "tools.project-id8.org"
+  rules:
+    - matches:
+      - path:
+          type: PathPrefix
+          value: /
+      backendRefs:
+        - name: it-tools-service
+          port: 80

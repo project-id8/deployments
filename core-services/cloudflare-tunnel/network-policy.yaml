@@ -1,0 +1,33 @@
+# This NetworkPolicy restricts access to the cloudflared pods
+# It allows traffic from the gateway-system namespace and allows all outbound traffic
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: cloudflared-policy
+  namespace: cloudflare-tunnel
+spec:
+  # Select the pods this policy applies to
+  podSelector:
+    matchLabels:
+      app: cloudflared
+  
+  policyTypes:
+    - Ingress  # Controls incoming traffic
+    - Egress   # Controls outgoing traffic
+  
+  # Ingress rules - who can send traffic to cloudflared pods
+  ingress:
+    - from:
+        # Allow traffic only from gateway-system namespace
+        # This is where the Gateway API controller runs
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: gateway-system
+  
+  # Egress rules - where cloudflared pods can send traffic to
+  egress:
+    - to:
+        # Allow outbound traffic to Cloudflare's network
+        # Required for the tunnel to function
+        - ipBlock:
+            cidr: 0.0.0.0/0  # Allow all outbound for tunnel connectivity 

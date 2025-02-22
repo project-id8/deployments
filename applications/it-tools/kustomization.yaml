@@ -2,3 +2,8 @@ resources:
   - namespace.yaml
   - service.yaml
   - deployment.yaml
+  - gateway-route.yaml
+
+# This ensures the TUNNEL_URL var is available
+transformers:
+  - ../../core-services/cloudflare-tunnel
