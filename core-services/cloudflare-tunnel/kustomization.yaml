@@ -19,22 +19,26 @@ resources:
   - network-policy.yaml
   - pdb.yaml
 
-vars:
-  # Get the tunnel URL from the ConfigMap
-  - name: TUNNEL_URL
-    objref:
+replacements:
+  # Get the tunnel URL from the ConfigMap for HTTPRoute annotations
+  - source:
       kind: ConfigMap
       name: cloudflare-tunnel-config
-      namespace: cloudflare-tunnel
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.tunnel-url
+      fieldPath: data.tunnel-url
+    targets:
+      - select:
+          kind: HTTPRoute
+        fieldPaths:
+          - metadata.annotations.external-dns.alpha.kubernetes.io/target
 
-  # Get the tunnel ID from the Secret
-  - name: CLOUDFLARE_TUNNEL_ID
-    objref:
+  # Get the tunnel ID from the Secret for ConfigMap
+  - source:
       kind: Secret
       name: cloudflare-tunnel-id
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.CLOUDFLARE_TUNNEL_ID 
+      fieldPath: data.CLOUDFLARE_TUNNEL_ID
+    targets:
+      - select:
+          kind: ConfigMap
+          name: cloudflare-tunnel-config
+        fieldPaths:
+          - data.tunnel-url 
