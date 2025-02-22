@@ -4,7 +4,7 @@ kind: Kustomization
 namespace: cert-manager
 
 resources:
-  - https://github.com/cert-manager/cert-manager/releases/download/v1.17.0/cert-manager.yaml
+  - cert-manager.1.17.0.yaml
   - cloudflare-token.external-secret.yaml
   - cluster-issuers.yaml
   - wildcard-certificate.yaml
