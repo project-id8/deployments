@@ -18,10 +18,21 @@ spec:
       labels:
         app: cloudflared
     spec:
-      # Security context for the pod
-      securityContext:
-        runAsNonRoot: true  # Don't run as root
-        runAsUser: 65534    # Use nobody user
+      serviceAccountName: cloudflared
+      initContainers:
+        - name: update-configmap
+          image: bitnami/kubectl:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              TUNNEL_ID=$(cat /secrets/tunnel-id/CLOUDFLARE_TUNNEL_ID)
+              TUNNEL_URL="$TUNNEL_ID.cfargotunnel.com"
+              kubectl patch configmap cloudflare-tunnel-config -n cloudflare-tunnel --type=merge -p "{\"data\":{\"tunnel-url\":\"$TUNNEL_URL\"}}"
+          volumeMounts:
+            - name: tunnel-id
+              mountPath: /secrets/tunnel-id
+              readOnly: true
       containers:
         - name: cloudflared
           image: cloudflare/cloudflared:2025.2.0
@@ -70,6 +81,10 @@ spec:
             capabilities:
               drop:
                 - ALL  # Drop all capabilities
+      volumes:
+        - name: tunnel-id
+          secret:
+            secretName: cloudflare-tunnel-id
       # Ensure pods are spread across nodes
       topologySpreadConstraints:
         - maxSkew: 1

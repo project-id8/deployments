@@ -15,10 +15,10 @@ resources:
   - deployment.yaml
   - network-policy.yaml
   - pdb.yaml
-  - cloudflare-tunnel-id.secret.yaml
+  - rbac.yaml
 
 replacements:
-  # Get the tunnel URL from the ConfigMap for HTTPRoute annotations
+  # Keep only the HTTPRoute annotation replacement
   - source:
       kind: ConfigMap
       name: cloudflare-tunnel-config
@@ -28,18 +28,4 @@ replacements:
       - select:
           kind: HTTPRoute
         fieldPaths:
-          - metadata.annotations.external-dns.alpha.kubernetes.io/target
-
-  # Get the tunnel ID from the Secret for ConfigMap
-  - source:
-      kind: Secret
-      name: cloudflare-tunnel-id
-      namespace: cloudflare-tunnel
-      fieldPath: data.CLOUDFLARE_TUNNEL_ID
-    targets:
-      - select:
-          kind: ConfigMap
-          name: cloudflare-tunnel-config
-          namespace: cloudflare-tunnel
-        fieldPaths:
-          - data.tunnel-url 
+          - metadata.annotations.external-dns.alpha.kubernetes.io/target 

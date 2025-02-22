@@ -8,5 +8,8 @@ metadata:
   namespace: cloudflare-tunnel
   annotations:
     argocd.argoproj.io/sync-wave: "2"  # After the secret is created
+    argocd.argoproj.io/compare-options: IgnoreExtraneous  # Ignore differences in data
+    argocd.argoproj.io/sync-options: Prune=false  # Don't prune the data
 data:
-  tunnel-url: "$(CLOUDFLARE_TUNNEL_ID).cfargotunnel.com" 
+  # This will be updated by the deployment's initContainer
+  tunnel-url: "placeholder.cfargotunnel.com" 
