@@ -85,11 +85,3 @@ spec:
         - name: tunnel-id
           secret:
             secretName: cloudflare-tunnel-id
-      # Ensure pods are spread across nodes
-      topologySpreadConstraints:
-        - maxSkew: 1
-          topologyKey: kubernetes.io/hostname
-          whenUnsatisfied: DoNotSchedule
-          labelSelector:
-            matchLabels:
-              app: cloudflared 
