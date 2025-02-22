@@ -34,7 +34,7 @@ replacements:
       kind: Secret
       name: cloudflare-tunnel-id
       namespace: cloudflare-tunnel
-      fieldPath: data.CLOUDFLARE_TUNNEL_ID
+      fieldPath: stringData.CLOUDFLARE_TUNNEL_ID
     targets:
       - select:
           kind: ConfigMap
