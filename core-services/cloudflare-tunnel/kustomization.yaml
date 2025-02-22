@@ -15,6 +15,7 @@ resources:
   - deployment.yaml
   - network-policy.yaml
   - pdb.yaml
+  - cloudflare-tunnel-id.secret.yaml
 
 replacements:
   # Get the tunnel URL from the ConfigMap for HTTPRoute annotations
